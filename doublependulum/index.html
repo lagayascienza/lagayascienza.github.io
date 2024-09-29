@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podwójne wahadło - animacja - LaGayaScienza</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    <script type="text/javascript">
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']]
+          }
+        };
+      </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> -->
+  </script>
+</head>
+<body>
+    <div class="main-wrapper">
+        <section class="parameters">
+            <form id="pendulumForm">
+                <div id="parameters-and-conditions">
+                    <div>
+                        <h1>Parametry fizyczne</h1>
+                        <span class="form-input-group">
+                            <label for="mass1">Masa pierwszego wahadła</label>
+                            <input type="number" id="mass1" name="mass1" value="1" step="any" required>
+                            <p>kg</p>
+                        </span>
+                        <span class="form-input-group">
+                            <label for="mass2">Masa drugiego wahadła</label>
+                            <input type="number" id="mass2" name="mass2" value="1" step="any" required>
+                            <p>kg</p>
+                        </span>
+                        <span class="form-input-group">
+                            <label for="length1">Długość pierwszego wahadła</label>
+                            <input type="number" id="length1" name="length1" value="1" step="any" required>
+                            <p>m</p>
+                        </span>
+                        <span class="form-input-group">
+                            <label for="length2">Długość drugiego wahadła</label>
+                            <input type="number" id="length2" name="length2" value="1" step="any" required>
+                            <p>m</p>
+                        </span>
+                    </div>
+                    <div>    
+                        <h1>Warunki początkowe</h1>
+                        <span class="form-input-group">
+                            <label for="angle1">Kąt pierwszego wahadła</label>
+                            <input type="number" id="angle1" name="angle1" value="90" step="any" required>
+                            <p>&deg;</p>
+                        </span>
+                        <span class="form-input-group">
+                            <label for="angle2">Kąt drugiego wahadła</label>
+                            <input type="number" id="angle2" name="angle2" value="45" step="any" required>
+                            <p>&deg;</p>
+                        </span>
+                        <span class="form-input-group">
+                            <label for="omega1">Prędkość kątowa pierwszego wahadła</label>
+                            <input type="number" id="omega1" name="omega1" value="0" step="any" required>
+                            <p><sup>rad</sup>/<sub>s</sub></p>
+                        </span>
+                        <span class="form-input-group">
+                            <label for="omega2">Prędkość kątowa drugiego wahadła</label>
+                            <input type="number" id="omega2" name="omega2" value="0" step="any" required>
+                            <p><sup>rad</sup>/<sub>s</sub></p>
+                        </span>
+                    </div>
+                </div>
+                <div id="animation-properties-form">
+                    <h1>Ustawienia animacji</h1>
+                    <div id="trajectoryInput1">
+                        <label>
+                            <input type="checkbox" id="showTrajectory1" name="showTrajectory1" checked="true">
+                            Wyświetl trajektorię pierwszej kulki
+                        </label>
+                        <label class="color-label" for="ball1Color">Kolor</label>
+                        <input type="color" id="ball1Color" name="ball1Color" value="#979c49">
+                    </div>
+                    <div id="trajectoryInput2">
+                        <label>
+                            <input type="checkbox" id="showTrajectory2" name="showTrajectory2" checked="true">
+                            Wyświetl trajektorię drugiej kulki
+                        </label>
+                        <label class="color-label" for="ball2Color">Kolor</label>
+                        <input type="color" id="bal2lColor" name="ball2Color" value="#789aff">
+                    </div>
+                    <div class="animationSpeed"> 
+                        <label id="animation-speed-label" for="animationSpeed">Szybkość animacji</label><br>
+                        <select id="animationSpeed" name="animationSpeed" required>
+                            <option value="0.25">0.25x</option>
+                            <option value="0.5">0.5x</option>
+                            <option value="0.75">0.75x</option>
+                            <option value="1" selected>1x</option>
+                            <option value="1.5">1.5x</option>
+                            <option value="2">2x</option>
+                        </select>
+                    </div>
+            
+                </div>
+                <input type="submit" value="Zatwierdź i restartuj animację">
+            </form>
+        </section>
+        <section>
+            <div id="canvas-container">    
+                <canvas id="canvas"></canvas>
+            </div>
+        </section>
+    </div>
+
+    <div class="wrapper2">
+        <article>
+            <h1>Jak przewidzieć ewolucję chaotycznego układu?</h1>
+            <hr>
+            <p>
+                Wahadło podwójne to prawdopodobnie najsłynniejszy przykład układu chaotycznego. <a href="https://pl.wikipedia.org/wiki/Chaos_(matematyka)" target="_blank">Chaotyczność układu</a> w ścisłym sensie oznacza dużą wrażliwość na warunki początkowe - nawet niewielka zmiana początkowego kąta wychylenia pierwszego lub drugiego wahadła może diametralnie zmienić trajektorię całego układu. Powstaje zatem pytanie, czy istnieje możliwość przewidzenia zachowania takiego układu. Fundamentalna zasada mechaniki klasycznej mówi, że jeżeli dokładnie znamy stan układu w danej chwili oraz wiemy jakie równania opisują jego ewolucję, to będziemy w stanie przewidzieć jego przyszłość.
+            </p>
+            <p>
+                Tę własność praw fizyki klasycznej nazywami <a href="https://pl.wikipedia.org/wiki/Determinizm">determinizmem</a>. Jednym z najbardziej zasłużonych naukowców badających mechanikę klasyczną był francuz Pierre Simon de Laplace, który zaproponował następujący eksperyment myślowy, nazywany Demonem Laplace'a:
+                <blockquote>
+                    Możemy postrzegać obecny stan Wszechświata jako skutek jego przeszłości i przyczynę jego przyszłości. Umysł, który w pewnym momencie znałby wszystkie siły powodujące ruch w przyrodzie oraz położenie wszystkich składających się na nią elementów, jeśli byłby też wystarczająco pojemny, by poddać te dane analizie, mógłby zawrzeć w pojedynczym wzorze ruch największych ciał i najdrobniejszych atomów we Wszechświecie; dla takiego umysłu nie istniałaby niepewność, a przyszłość, podobnie jak przeszłość, nie kryłaby żadnych tajemnic.
+                </blockquote>
+                <span class="quote-source">- L. Susskind, G. Hrabovsky, <cite>Teoretyczne Minimum</cite></span>
+                <br>
+                Za życia Laplace'a ludzkość nie wiedziała jeszcze o istnieniu mechaniki kwantowej, która z założenia jest indeterministyczna. Pomimo nowo odkrytych reguł dotyczących mikroświata, prawa fizyki klasycznej mogą być z powodzeniem stosowane do opisu zjawisk dziejących się w większej, bliższej ludziom skali.
+            </p>
+
+            <h1>Formalizm Lagrange'a i zasada najmniejszego działania</h1>
+            <hr>
+            <p>
+                W szkole średniej zadania z dynamiki uczymy się rozwiązywać przy użyciu klasycznego podejścia Newtonowskiego - w skrócie polega ono na zapisaniu działających w układzie sił oraz wynikających z nich równań ruchu. >W przypadku bardziej skomplikowanych zagadnień przydaje się jednak alternatywne podejście, nazywane formalizmem Lagrange'a lub mechaniką Lagrange'a. Zostało ono sformułowane przez matematyka J. L. Lagrange'a, około 100 lat po wydaniu <i>Principia Mathemathica</i> Newtona.
+            </p>
+            <p>
+                Najważniejszym pojęciem formalizmu Lagrange'a jest tak zwany lagranżjan. Jest to pewna funkcja, która w jakiś sposób zależy od położenia cząstki oraz jej prędkości (pośrednio więc także od czasu, bo w ogólnym przypadku położenie i prędkość zmieniają się w czasie). Zapiszemy zatem:
+                $$L(q(t), \dot{q}(t), t) = T - V$$
+                gdzie:
+                <br><br>&middot; $q(t)$ to zestaw współrzędnych opisujących jednoznacznie pozycję naszej cząstki w przestrzeni. Najczęściej będą to po prostu współrzędne kartezjańskie $x, y, z$,  choć czasem układ da się opisać w prostszy sposób, jak na przykład w przypadku pojedynczego wahadła, którego pozycję można jednoznacznie określić kątem wychylenia (patrz: stopnie swobody układu)
+                <br><br>&middot; $\dot{q}(t)$ to prędkości, inaczej pochodne współrzędnych po czasie
+                <br><br>&middot; $T$ to energia kinetyczna
+                <br><br>&middot; $V$ to uogólniona energia potencjalna.
+                <br><br>
+                Z kolei "działanie" naszej cząstki zdefiniujemy jako całkę z lagranżjanu od punktu $t_0$ do $t_1$:
+                $$ \int_{t_0}^{t_1} L(q(t), \dot{q}(t), t)\, dt  $$
+                Zasada najmniejszego działania mówi, cząstka zawsze wybierze trajektorię, wskutek której działanie będzie stacjonarne.
+                Naszym zadaniem jest znaleźć takie funkcje $q(t)$ oraz $\dot{q}(t)$, dla których wartość powyższego funkcjonału będzie stacjonarna. W praktyce szukając tych funkcji korzystamy z równań Eulera-Lagrange'a w postaci:
+                $$ \frac{d}{dt} \frac{\partial L}{\partial \dot{q_i}} = \frac{\partial L}{\partial q_i} $$
+                Powyższy zapis oznacza, że pochodna lagranżjanu po prędkości zróżniczkowana po czasie musi być równa pochodnej lagranżjanu po współrzędnej. Równań takich musimy ułożyć tyle, ile współrzędnych opisuje interesujący nas układ. W efekcie dostaniemy równania różniczkowe, których rozwiązania będą opisywać zachowanie układu w czasie.
+            </p>
+            
+            <h1>Wyprowadzenie równań ruchu dla podwójnego wahadła</h1>
+            <hr> 
+            <p>
+                Zacznijmy od zastanowienia się ile stopni swobody ma układ dwóch wahadeł, innymi słowy za pomocą ilu współrzędnych możemy jednoznacznie opisać stan układu. Ponieważ długości wahadeł pozostają stałe, wystarczy że podamy kąty wychylenia pierwszego i drugiego wahadła od pionu (alternatywnie można podać kąt wychylenia pierwszego wahadła od pionu i kąt wychylenia drugiego wahadła od kierunku wahadła pierwszego, wówczas lagranżjan przyjmie inną postać, ale dojdziemy na końcu do tych samych wniosków). 
+            </p>
+            <div class="two-image-figure">
+                <div class="image-wrap">
+                    <img src="pendulum_angle_1.png">
+                    <p>Wariant pierwszy, wychylenia wahadeł od pionu. Takie oznaczenie przyjmiemy w dalszej części.</p>
+                </div>
+                <div class="image-wrap">
+                    <img src="pendulum_angle_2.png">
+                    <p>Wariant drugi, wychylenie wahadła 1 od pionu i wychlenie wahadła 2 od kierunku wahadła 1.</p>
+                </div>
+            </div>
+            <p>
+                Teraz spróbujemy wyrazić współrzędne $x$ i $y$ wahadła w zależności od tych dwóch kątów. Wyobraźmy sobie, że zawieszamy nasze wahadło w punkcie $(0, 0)$ układu współrzędnych. Oznaczymy długości wahadeł kolejno jako $r_1$ i $r_2$.
+            </p>
+            <div class="single-image-figure">
+                <div class="image-wrap">
+                    <img src="pendulum_cartesian.png">
+                    <p>Korzystając z własności trójkątów prostokątnych z rysunku uzależnimy współrzędne od kątów oraz długości wahadeł.</p>
+                </div>
+            </div>
+            <p style="text-indent: 0;">
+                Pozycję pierwszej kulki możemy opisać w następujący sposób:
+                $$ x_1 = r_1 sin\alpha $$
+                $$ y_1 = - r_1 cos\alpha $$
+                W celu opisania drugiej kulki dodamy do współrzędnych pierwszej kulki długości odpowiednich przyprostokątnych trójkąta z kątem $\beta$ :
+                $$ x_2 = r_1 sin\alpha + r_2 sin\beta $$
+                $$ y_2 = - r_1 cos\alpha - r_2 cos\beta $$
+                Teraz możemy przystąpić do konstrukcji lagranżjanu. W naszym przypadku będzie on różnicą całkowitej energii kinetycznej obu kulek i całkowitej energii potencjalnej obu kulek. Aby wyznaczyć energię kinetyczną potrzebujemy prędkości, policzymy zatem pochodne po czasie ze współrzędnych, pamiętając, że kąty $\alpha$ i $\beta$ także są funkcjami czasu:
+                $$ \dot{x}_1 = r_1 cos\alpha \cdot \dot{\alpha}   $$
+                $$ \dot{y}_1 = r_1 sin\alpha \cdot \dot{\alpha}   $$
+                $$ \dot{x}_2 = r_1 cos\alpha \cdot \dot{\alpha} + r_2 cos\beta \cdot \dot{\beta}   $$
+                $$ \dot{y}_2 = r_1 sin\alpha \cdot \dot{\alpha} + r_2 sin\beta \cdot \dot{\beta}   $$
+                Wzór na energię kinetyczną:
+                $$ T = \frac{1}{2}mv^2 $$
+                Dodajemy energie kinetyczne kulek, których masy oznaczymy jako $m_1$ i $m_2$ :
+                $$ T = \frac{1}{2}m_1(\dot{x}_1^2 + \dot{y}_1^2) +\frac{1}{2}m_2(\dot{x}_2^2 + \dot{y}_2^2) $$
+                Po przekształceniach mamy:
+                $$ T = \frac{1}{2}m_1r_1^2\dot{\alpha}_1^2 + \frac{1}{2}m_2\left[r_1^2+\dot{\alpha}^2 + r_2^2\dot{\beta}^2 + 2r_1r_2\dot{\alpha}\dot{\beta}cos(\alpha - \beta) \right]$$
+                Następnie wyznaczymy energię potencjalną grawitacji układu. Na małych odległościach energia ta dana jest wzorem:
+                $$ V = mgh $$
+                Zatem dla podwójnego wahadła: 
+                $$ V = m_1gy_1 + m_2gy_2 $$
+                $$ V = - m_1 g r_1 cos\alpha - m_2 g (r_1 cos\alpha + r_2 cos\beta ) $$
+                Możemy już zapisać lagranżjan:
+                $$ L = \frac{1}{2}m_1r_1^2\dot{\alpha}_1^2 + \frac{1}{2}m_2\left[r_1^2+\dot{\alpha}^2 + r_2^2\dot{\beta}^2 + 2r_1r_2\dot{\alpha}\dot{\beta}cos(\alpha - \beta) \right] + m_1 g r_1 cos\alpha + m_2 g (r_1 cos\alpha + r_2 cos\beta ) $$
+                Dalej skorzystamy z równań Eulera-Lagrange'a. Ponieważ mamy dwa stopnie swobody ( $\alpha$ i $\beta$ ) otrzymamy dwa równania. Zaczniemy od zróżniczkowania lagranżjanu po prędkości kątowej $ \dot{\alpha}$ (otrzymane wyrażenie jest nazywane pędem kanonicznym):
+                $$ \frac{\partial L}{\partial \dot{\alpha}} = (m_1 + m_2)r_1^2\dot{\alpha} + m_2r_1r_2\dot{\beta}cos(\alpha - \beta) $$
+                Następnie różniczkujemy po czasie:
+                $$ \frac{d}{dt} \frac{\partial L}{\partial \dot{\alpha}} = (m_1 + m_2)r_1^2 \ddot{\alpha} + m_2r_1r_2\ddot{\beta}cos(\alpha - \beta) - m_2r_1r_2 \dot{\alpha}\dot{\beta} sin(\alpha - \beta) + m_2r_1r_2\dot{\alpha}_2 sin(\alpha - \beta) $$
+                Prawa strona równania Eulera-Lagrange'a to pochodna lagranżjanu po współrzędnych:
+                $$ \frac{\partial L}{\partial \alpha} = -m_2r_1r_2\dot{\alpha}\dot{\beta}sin(\alpha - 
+                \beta) - (m_1 + m_2)gr_1sin\alpha $$
+                Zatem równanie ruchu:
+                $$ (m_1 + m_2)r_1^2 \ddot{\alpha} + m_2r_1r_2\ddot{\beta}cos(\alpha - \beta) - m_2r_1r_2 \dot{\alpha}\dot{\beta} sin(\alpha - \beta) + m_2r_1r_2\dot{\alpha}_2 sin(\alpha - \beta) = -m_2r_1r_2\dot{\alpha}\dot{\beta}sin(\alpha - 
+                \beta) - (m_1 + m_2)gr_1sin\alpha / : r_1 $$
+                $$ (m_1 + m_2)r_1 \ddot{\alpha} + m_2r_2\ddot{\beta}cos(\alpha - \beta) - m_2r_2 \dot{\alpha}\dot{\beta} sin(\alpha - \beta) + m_2r_2\dot{\alpha}_2 sin(\alpha - \beta) = -m_2r_2\dot{\alpha}\dot{\beta}sin(\alpha - 
+                \beta) - (m_1 + m_2)gsin\alpha $$  
+
+                Analogiczną procedurę musimy przeprowadzić dla kąta $\beta$, z czego otrzymamy drugie równanie ruchu:
+                $$ r_2\ddot{\beta} + r_1\ddot{\alpha}cos(\alpha - \beta) - r_1\dot{\alpha}^2sin(\alpha - \beta) = -gsin(\beta) $$
+
+                Otrzymaliśmy zatem następujący układ równań:
+                $$
+                    \begin{cases} 
+                    (m_1 + m_2)r_1 \ddot{\alpha} + m_2r_2\ddot{\beta}cos(\alpha - \beta) - m_2r_2 \dot{\alpha}\dot{\beta} sin(\alpha - \beta) + m_2r_2\dot{\alpha}_2 sin(\alpha - \beta) = -m_2r_2\dot{\alpha}\dot{\beta}sin(\alpha - 
+                    \beta) - (m_1 + m_2)gsin\alpha \\
+                    r_2\ddot{\beta} + r_1\ddot{\alpha}cos(\alpha - \beta) - r_1\dot{\alpha}^2sin(\alpha - \beta) = -gsin(\beta) 
+                    \end{cases}
+                $$
+                W powyższych równaniach zawierają się wszystkie informacje dotyczące stanu układu w dowolnym momencie. Znając parametry fizyczne (masy i długości wahadeł) oraz warunki początkowe (kąty i prędkości kątowe) rozwiązując powyższe równania jesteśmy w stanie podać dokładny stan układu w dowolnym momencie (zarówno w przeszłości jak i w przyszłości!).
+            </p>
+
+            <h1>Implementacja w JavaScript</h1>
+            <hr>
+            <p>
+                Układ równań ruchu podwójnego wahadła zawiera równania różniczkowe drugiego rzędu (najwyższy rząd pochodnej to dwa). Ponieważ do obliczenia przybliżonych rozwiązań wykorzystamy algorytm Rungego-Kutty, musimy przekszałcić układ tak, aby zawierał jedynie pochodne pierwszego rzędu, a następnie wyrugować te pochodne z równań. Zdefiniujemy prędkości kątowe jako pochodne:
+                $$ \omega_1 = \dot{\alpha} $$
+                $$ \omega_2 = \dot{\beta} $$
+                Następnie zróżniczkujemy powyższe równania względem czasu:
+                $$ \dot{\omega}_1 = \ddot{\alpha} $$
+                $$ \dot{\omega}_2 = \ddot{\beta} $$
+                Powyższe wyrażenia na $ \ddot{\alpha} $ i $ \ddot{\beta} $ wstawimy do układu równań ruchu, oraz wyznaczymy z nich $ \dot{\omega}_1 $ i $ \dot{\omega}_2 $. Proces ten jest dość żmudny, a końcowe równania obszerne, dlatego zapiszemy końcowy układ równań w uproszczonej formie:
+                $$ 
+                    \begin{cases} 
+                        \dot{\alpha} = \omega_1 \\
+                        \dot{\beta} = \omega_2 \\
+                        \dot{\omega}_1 = f_1(\alpha, \beta, \omega_1, \omega_2 ) \\
+                        \dot{\omega}_2 = f_2(\alpha, \beta, \omega_1, \omega_2 ) \\
+                    \end{cases}
+                $$
+                gdzie $f_1, f_2$ oznaczają pewne funkcje warunków początkowych wymienionych jako argumenty. Powyższy układ definiujemy jako funkcję warunków początkowych w JavaScript.  
+            </p>
+            <p>
+                Animację wyświelimy w elemencie standardu HTML5 <code>canvas</code>. Ponieważ domyślnie animacje są generowane w 60 klatkach na sekundę, aby uzyskać rzeczywisty upływ czasu oraz płynny ruch, krok co jaki będziemy wyznaczać kolejne przybliżone rozwiązania równań różniczkowych wynosi <sup>1</sup>/<sub>60</sub> sekundy (w powyższej animacji zaimplementowano możliwość przyspieszonego i zwolnionego tempa, wówczas będziemy liczyć rozwiązania odpowiednio rzadziej lub gęściej, np. dla szybkości x0.25 krok wynosi <sup>1</sup>/<sub>240</sub> sekundy). Podczas renderowania każdej kolejnej klatki algorytm wyznaczy chwilową pozycję obu wahadeł. W celu narysowania trajektorii wahadeł, będziemy też zachowywać przeszłe pozycje (60 par współrzędnych, czyli sekunda w tył dla normalnej szybkości animacji).
+            </p> 
+            <p>
+                Zainteresowanych kodem źródłowym w JS przekierowuję <a href="/main.js">ten adres.</a>
+            </p>
+
+
+
+        </article>
+    </div>
+
+
+    <footer>
+        <a href="https://lagayascienza.github.io">lagayascienza.github.io</a>
+    </footer>
+
+    <script src="main.js"></script>
+    <script src="style.js"></script>
+    
+</body>
+</html>
