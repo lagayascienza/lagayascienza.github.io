@@ -115,3 +115,22 @@ footer a{
     text-decoration: none;
     margin: 10px;
 }
+
+
+/*#region MOBILE*/
+@media only screen and (max-width: 800px) {
+    nav h1{
+        font-size: 24px;
+    }
+    .posts{
+        max-width: 100%;
+        width: 95%;
+    }
+    .post{
+        grid-template-columns: 1fr;
+    }
+    .post-thumbnail img{
+        max-height: 300px;
+    }
+
+}
